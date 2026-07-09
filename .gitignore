@@ -1,0 +1,34 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+.next/
+out/
+.vercel/
+
+# local env
+.env
+.env*.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# system files
+.DS_Store
+Thumbs.db
+
+# local/unreferenced source duplicates
+public/projects/alterra-project.mov
+public/projects/kaskad-project.mov
+public/projects/furniture-project.mov
+public/projects/gran-project.mov
+public/projects/aura-project.mov
+public/projects/manifesto-video-1.mov
+public/projects/manifesto-video-2.mov
+public/projects/hero-scroll.mov
+public/projects/alterra-wall.mov
