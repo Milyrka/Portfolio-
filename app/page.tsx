@@ -37,6 +37,7 @@ function Portfolio(){const {language,toggleLanguage}=useLanguage();const en=lang
     <audio id="sound-scene-1" src="/audio/scene-1.mp3" preload="auto" loop/>
     <audio id="sound-scene-2" src="/audio/scene-2.mp3" preload="auto" loop/>
     <audio id="sound-process" src="/audio/process-whoosh.mp3" preload="auto"/>
+    <audio id="sound-tools-swoosh" src="/audio/tools-swoosh.mp3" preload="auto"/>
     <audio id="sound-ui-tap" src="/audio/ui-tap.mp3" preload="auto"/>
 
     <section className="manifesto" id="works" data-scene>

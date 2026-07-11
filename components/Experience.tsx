@@ -7,14 +7,17 @@ export function Experience({children}:{children:ReactNode}){useEffect(()=>{gsap.
   const soundButton=document.querySelector<HTMLButtonElement>(".sound-toggle");
   const soundTracks={scene1:document.querySelector<HTMLAudioElement>("#sound-scene-1"),scene2:document.querySelector<HTMLAudioElement>("#sound-scene-2")};
   const processWhoosh=document.querySelector<HTMLAudioElement>("#sound-process");
+  const toolsSwoosh=document.querySelector<HTMLAudioElement>("#sound-tools-swoosh");
   const uiTap=document.querySelector<HTMLAudioElement>("#sound-ui-tap");
   let soundEnabled=false,currentSound: keyof typeof soundTracks | null=null;
   Object.values(soundTracks).forEach(track=>{if(track)track.volume=.34});
   if(processWhoosh)processWhoosh.volume=.52;
+  if(toolsSwoosh)toolsSwoosh.volume=.42;
   if(uiTap)uiTap.volume=.5;
   const pauseBackground=()=>Object.values(soundTracks).forEach(track=>track?.pause());
-  const stopSounds=()=>{pauseBackground();processWhoosh?.pause();uiTap?.pause()};
+  const stopSounds=()=>{pauseBackground();processWhoosh?.pause();toolsSwoosh?.pause();uiTap?.pause()};
   const playProcessWhoosh=()=>{if(!soundEnabled||!processWhoosh)return;processWhoosh.pause();processWhoosh.currentTime=0;void processWhoosh.play().catch(()=>undefined)};
+  const playToolsSwoosh=()=>{if(!soundEnabled||!toolsSwoosh)return;toolsSwoosh.pause();toolsSwoosh.currentTime=0;void toolsSwoosh.play().catch(()=>undefined)};
   const playUiTap=()=>{if(!uiTap)return;uiTap.pause();uiTap.currentTime=0;void uiTap.play().catch(()=>undefined)};
   const activateSound=(name:keyof typeof soundTracks|null)=>{if(currentSound===name&&(!name||!soundEnabled||!soundTracks[name]?.paused))return;currentSound=name;pauseBackground();if(soundEnabled&&name){void soundTracks[name]?.play().catch(()=>undefined)}};
   const toggleSound=()=>{soundEnabled=!soundEnabled;soundButton?.setAttribute("aria-pressed",String(soundEnabled));if(soundEnabled&&currentSound)void soundTracks[currentSound]?.play().catch(()=>undefined);else if(!soundEnabled)stopSounds()};
@@ -133,7 +136,8 @@ export function Experience({children}:{children:ReactNode}){useEffect(()=>{gsap.
         .fromTo(scene.querySelector(".device-mobile"),{x:70,y:35,opacity:0},{x:0,y:0,opacity:1,ease:"power3.out"},.12)
         .fromTo(scene.querySelector(".adaptive-info"),{y:36,opacity:0},{y:0,opacity:1,ease:"power2.out"},.2);
     });
-    gsap.timeline({scrollTrigger:{trigger:".tools",start:"top top",end:"+=220%",pin:true,scrub:.85}})
+    let lastToolsPass=-1;
+    gsap.timeline({scrollTrigger:{trigger:".tools",start:"top top",end:"+=220%",pin:true,scrub:.85,onUpdate:self=>{const pass=Math.floor(self.progress*5);if(pass!==lastToolsPass){lastToolsPass=pass;playToolsSwoosh()}},onLeave:()=>{lastToolsPass=-1},onLeaveBack:()=>{lastToolsPass=-1}}})
       .fromTo(".m1",{xPercent:0},{xPercent:-18,duration:1,ease:"none"},0)
       .fromTo(".m2",{xPercent:-18},{xPercent:0,duration:1,ease:"none"},0);
     ScrollTrigger.create({trigger:".manifesto",start:"top top",end:"+=820%",onEnter:()=>activateSound("scene1"),onEnterBack:()=>activateSound("scene2"),onUpdate:self=>activateSound(self.progress<.62?"scene1":"scene2"),onLeave:()=>activateSound(null),onLeaveBack:()=>activateSound(null)});
