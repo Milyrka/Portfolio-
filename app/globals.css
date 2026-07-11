@@ -474,12 +474,15 @@ body{font-family:var(--font-body);font-weight:400}.hero h1,.manifesto-lines h2,.
 }
 
 @media(max-width:900px){
-  .hero-static-media-desktop{display:none!important}
-  .hero-static-media-mobile{display:block!important;object-fit:cover!important;object-position:center top!important}
+  .hero-static-media-desktop{display:block!important;object-fit:cover!important;object-position:center top!important}
+  .hero-static-media-mobile{display:none!important}
   .hero-static .hero-cleanup{display:none!important}
   .hero-static-hit-discuss-top{right:4vw;top:3.2vh;width:28vw;height:4.8rem}
-  .hero-static-hit-discuss-bottom{left:2.5vw;right:2.5vw;bottom:7.2vh;width:auto;height:5.8vh;min-height:3.25rem}
-  .hero-static-hit-projects{left:2.5vw;right:2.5vw;bottom:1.2vh;width:auto;height:5.8vh;min-height:3.25rem}
+  .hero-static-hit-discuss-bottom,.hero-static-hit-projects{left:2.5vw;right:2.5vw;width:auto;height:3.6rem;min-height:0;border:1px solid rgba(150,120,94,.34);background:rgba(247,239,230,.58);box-shadow:0 .55rem 1.25rem rgba(89,64,46,.16);color:#7d6753;font-size:.58rem;font-weight:600;letter-spacing:.12em;line-height:1;text-transform:uppercase;display:flex;align-items:center;justify-content:center}
+  .hero-static-hit-discuss-bottom{bottom:5.6rem}
+  .hero-static-hit-projects{bottom:1.35rem;background:rgba(247,239,230,.28)}
+  .hero-static-hit-discuss-bottom::after{content:"Обсудить проект  ↗"}
+  .hero-static-hit-projects::after{content:"Смотреть проекты  ↗"}
   .manifesto .manifesto-lens{position:absolute!important;inset:0!important;width:100vw!important;height:100vh!important;margin:0!important}
   .manifesto-scene{inset:-4%;opacity:.72}
   .manifesto-scene::after{background:linear-gradient(180deg,rgba(28,15,22,.72),rgba(28,15,22,.28) 50%,rgba(28,15,22,.7))}
@@ -492,4 +495,13 @@ body{font-family:var(--font-body);font-weight:400}.hero h1,.manifesto-lines h2,.
   .manifesto .manifesto-rendered-title{position:relative;left:auto;top:auto;width:92vw;height:auto;aspect-ratio:484/266}
   .manifesto>.manifesto-stage>.label{position:relative;left:auto;top:auto}
   .manifesto-copy{left:auto;bottom:auto;width:auto}
+}
+
+@media(max-width:768px){
+  .hero-static-media-desktop{display:none!important}
+  .hero-static-media-mobile{display:block!important}
+  .hero-static-hit-discuss-bottom,.hero-static-hit-projects{height:5.8vh;min-height:3.25rem;border:0;background:transparent;box-shadow:none;color:transparent;font-size:0}
+  .hero-static-hit-discuss-bottom{bottom:7.2vh}
+  .hero-static-hit-projects{bottom:1.2vh}
+  .hero-static-hit-discuss-bottom::after,.hero-static-hit-projects::after{display:none}
 }

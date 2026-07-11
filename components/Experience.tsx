@@ -116,6 +116,8 @@ export function Experience({children}:{children:ReactNode}){useEffect(()=>{gsap.
       gsap.to(".manifesto .pr-1",{rotate:90,duration:5,ease:"none",repeat:-1});
       gsap.to(".manifesto .pr-2",{rotate:-90,duration:4.2,ease:"none",repeat:-1});
       gsap.to(".manifesto .pr-3",{rotate:60,duration:3.5,ease:"none",repeat:-1});
+      gsap.to(".manifesto .sf-a",{x:22,y:-14,rotate:5,duration:2.8,ease:"sine.inOut",repeat:-1,yoyo:true});
+      gsap.to(".manifesto .manifesto-rendered-title",{y:-7,duration:2.4,ease:"sine.inOut",repeat:-1,yoyo:true});
       document.querySelectorAll<HTMLElement>(".artifact-main").forEach(el=>gsap.fromTo(el,{yPercent:12,scale:.92},{yPercent:-12,scale:1.05,ease:"none",scrollTrigger:{trigger:el,start:"top bottom",end:"bottom top",scrub:.65}}));
     });
     gsap.utils.toArray<HTMLElement>(".step").forEach(el=>gsap.from(el,{x:80,opacity:0,duration:1,ease:"power4.out",scrollTrigger:{trigger:el,start:"top 84%",once:true}}));
