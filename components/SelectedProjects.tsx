@@ -3,21 +3,22 @@
 import Image from "next/image";
 import type {TouchEvent as ReactTouchEvent} from "react";
 import {useEffect,useRef,useState} from "react";
+import {useLanguage} from "@/components/LanguageProvider";
 
 type Device="tablet"|"desktop"|"mobile";
-type Project={title:string;description:string;tags:string;href:string;poster:string;video?:string;mobileVideo?:string;mobileFit?: "cover" | "height"};
+type Project={title:string;description:{ru:string;en:string};tags:string;href:string;poster:string;video?:string;mobileVideo?:string;mobileFit?: "cover" | "height"};
 
 const emitSound=(name:"ui-tap"|"process-whoosh"|"video-play"|"video-pause",currentTime=0)=>window.dispatchEvent(new CustomEvent(`portfolio-${name}`,{detail:{currentTime}}));
 
 const projects:Project[]=[
-  {title:"ALTERRA",description:"Cinematic journey для премиальной hotel collection — от большого экрана до мобильного ритма.",tags:"Next.js / GSAP / Motion storytelling",href:"https://alterra-project.vercel.app/",poster:"/projects/alterra-1.png",video:"/projects/alterra-project.mp4",mobileVideo:"/projects/alterra-mobile.mov",mobileFit:"height"},
-  {title:"KASKAD",description:"Архитектура, природа и scroll-storytelling в единой адаптивной системе.",tags:"Interactive web / Architecture / GSAP",href:"https://kaskad-private-forest-residence.vercel.app/",poster:"/projects/kaskad-1.jpg",video:"/projects/kaskad-project.mp4",mobileVideo:"/projects/kaskad-mobile.mov",mobileFit:"height"},
-  {title:"ГРАНЬ",description:"Luxury e-commerce с точной продуктовой подачей на каждом размере экрана.",tags:"E-commerce / Visual direction / UI",href:"https://www.behance.net/gallery/251495485/gran-internet-magazin-aromatov-dlja-doma-E-commerce",poster:"/projects/gran-hero.png",video:"/projects/gran-project.mp4",mobileVideo:"/projects/gran-mobile.mov"},
-  {title:"AURA",description:"Айдентика кофейного бренда, переведённая в тактильную digital-композицию.",tags:"Brand identity / Packaging / Digital",href:"https://www.behance.net/gallery/250802733/AURA-Coffee-Brand-Identity-Packaging-Design",poster:"/projects/aura-hero.png",video:"/projects/aura-project.mp4",mobileVideo:"/projects/aura-mobile.mov"},
-  {title:"LUXURY FURNITURE",description:"Editorial-опыт для премиальной мебели с отдельной режиссурой desktop и mobile.",tags:"Editorial / Luxury UI / Motion",href:"https://luxury-furniture-website-nu.vercel.app/",poster:"/projects/furniture-1.png",video:"/projects/furniture-project.mp4",mobileVideo:"/projects/furniture-mobile.mov",mobileFit:"height"},
+  {title:"ALTERRA",description:{ru:"Cinematic journey для премиальной hotel collection — от большого экрана до мобильного ритма.",en:"A cinematic journey for a premium hotel collection — from the large screen to the mobile rhythm."},tags:"Next.js / GSAP / Motion storytelling",href:"https://alterra-project.vercel.app/",poster:"/projects/alterra-1.png",video:"/projects/alterra-project.mp4",mobileVideo:"/projects/alterra-mobile.mov",mobileFit:"height"},
+  {title:"KASKAD",description:{ru:"Архитектура, природа и scroll-storytelling в единой адаптивной системе.",en:"Architecture, nature and scroll storytelling in one adaptive system."},tags:"Interactive web / Architecture / GSAP",href:"https://kaskad-private-forest-residence.vercel.app/",poster:"/projects/kaskad-1.jpg",video:"/projects/kaskad-project.mp4",mobileVideo:"/projects/kaskad-mobile.mov",mobileFit:"height"},
+  {title:"ГРАНЬ",description:{ru:"Luxury e-commerce с точной продуктовой подачей на каждом размере экрана.",en:"Luxury e-commerce with precise product storytelling at every screen size."},tags:"E-commerce / Visual direction / UI",href:"https://www.behance.net/gallery/251495485/gran-internet-magazin-aromatov-dlja-doma-E-commerce",poster:"/projects/gran-hero.png",video:"/projects/gran-project.mp4",mobileVideo:"/projects/gran-mobile.mov"},
+  {title:"AURA",description:{ru:"Айдентика кофейного бренда, переведённая в тактильную digital-композицию.",en:"Coffee-brand identity translated into a tactile digital composition."},tags:"Brand identity / Packaging / Digital",href:"https://www.behance.net/gallery/250802733/AURA-Coffee-Brand-Identity-Packaging-Design",poster:"/projects/aura-hero.png",video:"/projects/aura-project.mp4",mobileVideo:"/projects/aura-mobile.mov"},
+  {title:"LUXURY FURNITURE",description:{ru:"Editorial-опыт для премиальной мебели с отдельной режиссурой desktop и mobile.",en:"An editorial experience for premium furniture with dedicated desktop and mobile direction."},tags:"Editorial / Luxury UI / Motion",href:"https://luxury-furniture-website-nu.vercel.app/",poster:"/projects/furniture-1.png",video:"/projects/furniture-project.mp4",mobileVideo:"/projects/furniture-mobile.mov",mobileFit:"height"},
 ];
 
-function Screen({project,device,playing,savedTime,onStart,onStop}:{project:Project;device:Device;playing:boolean;savedTime:number;onStart:()=>void;onStop:(time:number)=>void}){
+function Screen({project,device,playing,savedTime,onStart,onStop}:{project:Project;device:Device;playing:boolean;savedTime:number;onStart:()=>void;onStop:(time:number)=>void}){const {language}=useLanguage();const labels=language==="en"?{play:"Play",stop:"Stop",pause:"Tap to pause"}:{play:"Воспроизвести",stop:"Остановить",pause:"Нажмите, чтобы остановить"};
   const videoRef=useRef<HTMLVideoElement>(null);
   const videoSrc=device==="mobile"&&project.mobileVideo?project.mobileVideo:project.video;
   const mobileFitClass=device==="mobile"?` mobile-fit-${project.mobileFit??"cover"}`:"";
@@ -29,23 +30,23 @@ function Screen({project,device,playing,savedTime,onStart,onStop}:{project:Proje
     {videoSrc&&<video data-screen-video={device} className={`device-video video-${device}${playing?" is-playing":""}${mobileFitClass}`} ref={videoRef} src={videoSrc} poster={project.poster} muted loop playsInline preload="auto" onPlay={event=>emitSound("video-play",event.currentTarget.currentTime)}/>}
     {!playing&&<Image className={`device-poster${mobileFitClass}`} src={project.poster} alt="" fill sizes={device==="desktop"?"56vw":device==="tablet"?"25vw":"13vw"}/>} 
     <span className="screen-reflection"/>
-    {videoSrc&&playing&&<button type="button" className="device-pause-layer" data-pause-device={device} onClick={event=>{event.preventDefault();event.stopPropagation();stopPlayback()}} aria-label={`Остановить ${project.title} — ${device}`}/>}
-    {videoSrc&&!playing&&<button type="button" className="device-play" data-play-device={device} onClick={event=>{event.preventDefault();event.stopPropagation();startPlayback()}} aria-label={`Воспроизвести ${project.title} — ${device}`}><i/>PLAY</button>}
-    {videoSrc&&playing&&<span className="pause-hint">Нажмите, чтобы остановить</span>}
+    {videoSrc&&playing&&<button type="button" className="device-pause-layer" data-pause-device={device} onClick={event=>{event.preventDefault();event.stopPropagation();stopPlayback()}} aria-label={`${labels.stop} ${project.title} — ${device}`}/>}
+    {videoSrc&&!playing&&<button type="button" className="device-play" data-play-device={device} onClick={event=>{event.preventDefault();event.stopPropagation();startPlayback()}} aria-label={`${labels.play} ${project.title} — ${device}`}><i/>PLAY</button>}
+    {videoSrc&&playing&&<span className="pause-hint">{labels.pause}</span>}
   </div>
 }
 
-function DeviceMockup({type,project,active,playing,savedTime,onStart,onStop}:{type:Device;project:Project;active:boolean;playing:boolean;savedTime:number;onStart:()=>void;onStop:(time:number)=>void}){
+function DeviceMockup({type,project,active,playing,savedTime,onStart,onStop}:{type:Device;project:Project;active:boolean;playing:boolean;savedTime:number;onStart:()=>void;onStop:(time:number)=>void}){const {language}=useLanguage();
   const labels={tablet:"Tablet",desktop:"Desktop",mobile:"Mobile"};
   const toggle=()=>{const hasVideo=type==="mobile"&&project.mobileVideo?project.mobileVideo:project.video;if(!hasVideo)return;if(playing){onStop(savedTime);return}emitSound("ui-tap");emitSound("video-play",savedTime);onStart()};
-  return <div className={`device device-${type}${active?" is-active":""}`} data-device={type} role="button" tabIndex={0} aria-label={`${playing?"Остановить":"Воспроизвести"} ${project.title} — ${labels[type]}`} onClick={event=>{if((event.target as HTMLElement).closest("button,a"))return;toggle()}} onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();toggle()}}}>
+  return <div className={`device device-${type}${active?" is-active":""}`} data-device={type} role="button" tabIndex={0} aria-label={`${playing?(language==="en"?"Stop":"Остановить"):(language==="en"?"Play":"Воспроизвести")} ${project.title} — ${labels[type]}`} onClick={event=>{if((event.target as HTMLElement).closest("button,a"))return;toggle()}} onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();toggle()}}}>
     <div className="device-shell"><Screen project={project} device={type} playing={playing} savedTime={savedTime} onStart={onStart} onStop={onStop}/><span className="device-edge"/></div>
     {type==="desktop"&&<div className="monitor-base"><i/><b/></div>}
     <span className="device-label">{labels[type]}</span>
   </div>
 }
 
-function ProjectStage({project,index}:{project:Project;index:number}){
+function ProjectStage({project,index}:{project:Project;index:number}){const {language}=useLanguage();const copy=language==="en"?{open:"Open project",devices:"Device selection"}:{open:"Открыть проект",devices:"Выбор устройства"};
   const order:Device[]=["tablet","desktop","mobile"];
   const [active,setActive]=useState<Device>("desktop");
   const [playingDevice,setPlayingDevice]=useState<Device|null>(null);
@@ -67,12 +68,12 @@ function ProjectStage({project,index}:{project:Project;index:number}){
       <div className="exhibition-floor"/>
     </div>
     <div className="project-position">{String(index+1).padStart(2,"0")} / {String(projects.length).padStart(2,"0")}</div>
-    <div className="adaptive-info"><p>{project.tags}</p><h3>{project.title}</h3><span>{project.description}</span><a href={project.href} target="_blank" rel="noreferrer">Открыть проект <b>↗</b></a></div>
-    <div className="device-nav" aria-label="Выбор устройства">{order.map(type=><button key={type} className={active===type?"is-current":""} onClick={()=>{emitSound("ui-tap");emitSound("process-whoosh");setActive(type)}}>{type}</button>)}</div>
+    <div className="adaptive-info"><p>{project.tags}</p><h3>{project.title}</h3><span>{project.description[language]}</span><a href={project.href} target="_blank" rel="noreferrer">{copy.open} <b>↗</b></a></div>
+    <div className="device-nav" aria-label={copy.devices}>{order.map(type=><button key={type} className={active===type?"is-current":""} onClick={()=>{emitSound("ui-tap");emitSound("process-whoosh");setActive(type)}}>{type}</button>)}</div>
   </article>
 }
 
-export function SelectedProjects(){return <section className="selected-projects" id="selected-works">
-  <header className="selected-heading"><p className="label">Selected projects / responsive direction</p><div className="selected-title"><h2>Избранные</h2><div className="selected-word"><Image src="/selected/projects-word-user.png" alt="Проекты" fill sizes="(max-width:768px) 92vw, 58vw"/></div></div><a className="all-projects-link" href="https://drive.google.com/drive/folders/1ojF4PhnhW3XYTeDKTjSyHCLk2RBhBwBS?usp=drive_link" target="_blank" rel="noreferrer">Все проекты <span>↗</span></a><p className="selected-note">Смотреть полную коллекцию работ.</p></header>
+export function SelectedProjects(){const {language}=useLanguage();const copy=language==="en"?{heading:"Selected",word:"Projects",all:"All projects",note:"See the complete collection of work."}:{heading:"Избранные",word:"Проекты",all:"Все проекты",note:"Смотреть полную коллекцию работ."};return <section className="selected-projects" id="selected-works">
+  <header className="selected-heading"><p className="label">Selected projects / responsive direction</p><div className="selected-title"><h2>{copy.heading}</h2><div className={`selected-word${language==="en"?" is-english":""}`}>{language==="en"?<Image src="/selected/projects-word-en.png" alt={copy.word} fill sizes="(max-width:768px) 92vw, 58vw"/>:<Image src="/selected/projects-word-user.png" alt={copy.word} fill sizes="(max-width:768px) 92vw, 58vw"/>}</div></div><a className="all-projects-link" href="https://drive.google.com/drive/folders/1ojF4PhnhW3XYTeDKTjSyHCLk2RBhBwBS?usp=drive_link" target="_blank" rel="noreferrer">{copy.all} <span>↗</span></a><p className="selected-note">{copy.note}</p></header>
   {projects.map((project,index)=><ProjectStage project={project} index={index} key={project.title}/>)}
 </section>}
