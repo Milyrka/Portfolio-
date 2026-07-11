@@ -610,6 +610,7 @@ main[data-language="en"] .contact h2.contact-clay-title.is-english img{object-fi
   .manifesto .portfolio-screen .reel-media{position:relative;inset:auto;left:auto;top:auto;right:auto;bottom:auto;transform:none;margin:auto}
   .manifesto{height:108dvh!important;min-height:108dvh!important;padding:0!important}
   .manifesto .reel-media{width:min(92vw,26rem)!important;aspect-ratio:9/19!important}
+  .manifesto .reel-media video,.manifesto .reel-media img{object-fit:contain!important;object-position:center!important}
 }
 
 /* The English desktop artwork includes its top navigation; do not crop it. */
