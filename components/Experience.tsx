@@ -110,7 +110,7 @@ export function Experience({children}:{children:ReactNode}){useEffect(()=>{gsap.
     });
     mm.add("(max-width:900px)",()=>{
       const playMobileReel=()=>document.querySelectorAll<HTMLVideoElement>(".reel-project video").forEach(video=>{video.currentTime=0;void video.play().catch(()=>undefined)});
-      const manifestoMobile=gsap.timeline({scrollTrigger:{trigger:".manifesto",start:"top top",end:"+=280%",pin:true,scrub:.7}});
+      const manifestoMobile=gsap.timeline({scrollTrigger:{trigger:".manifesto",start:"top top",end:"+=420%",pin:true,scrub:.7}});
       manifestoMobile
         .set(".manifesto .portfolio-screen",{display:"block",opacity:0})
         .to(".manifesto .manifesto-rendered-title,.manifesto .manifesto-copy,.manifesto .label",{y:-28,opacity:0,duration:.18,ease:"power2.in"},.08)
@@ -128,7 +128,7 @@ export function Experience({children}:{children:ReactNode}){useEffect(()=>{gsap.
         .to(".reel-1",{opacity:1,duration:.18},.94)
         .to(".reel-1",{opacity:0,scale:.98,duration:.1,ease:"power2.in"},1.12)
         .fromTo(".reel-2",{opacity:0,scale:1.06},{opacity:1,scale:1,duration:.14,ease:"power2.out"},1.2);
-      ScrollTrigger.create({trigger:".manifesto",start:"top top",end:"+=280%",onEnter:()=>activateSound("scene1"),onEnterBack:()=>activateSound("scene2"),onUpdate:self=>activateSound(self.progress<.82?"scene1":"scene2"),onLeave:()=>activateSound(null),onLeaveBack:()=>activateSound(null)});
+      ScrollTrigger.create({trigger:".manifesto",start:"top top",end:"+=420%",onEnter:()=>activateSound("scene1"),onEnterBack:()=>activateSound("scene2"),onUpdate:self=>activateSound(self.progress<.82?"scene1":"scene2"),onLeave:()=>activateSound(null),onLeaveBack:()=>activateSound(null)});
       document.querySelectorAll<HTMLElement>(".artifact-main").forEach(el=>gsap.fromTo(el,{yPercent:12,scale:.92},{yPercent:-12,scale:1.05,ease:"none",scrollTrigger:{trigger:el,start:"top bottom",end:"bottom top",scrub:.65}}));
     });
     gsap.utils.toArray<HTMLElement>(".step").forEach(el=>gsap.from(el,{x:80,opacity:0,duration:1,ease:"power4.out",scrollTrigger:{trigger:el,start:"top 84%",once:true}}));
