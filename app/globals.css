@@ -499,9 +499,24 @@ body{font-family:var(--font-body);font-weight:400}.hero h1,.manifesto-lines h2,.
 
 @media(max-width:768px){
   .hero-static-media-desktop{display:none!important}
-  .hero-static-media-mobile{display:block!important}
+  .hero-static-media-mobile{display:block!important;object-fit:contain!important;object-position:center center!important;background:#e8ded2}
   .hero-static-hit-discuss-bottom,.hero-static-hit-projects{height:5.8vh;min-height:3.25rem;border:0;background:transparent;box-shadow:none;color:transparent;font-size:0}
   .hero-static-hit-discuss-bottom{bottom:7.2vh}
   .hero-static-hit-projects{bottom:1.2vh}
   .hero-static-hit-discuss-bottom::after,.hero-static-hit-projects::after{display:none}
+}
+
+@media(max-width:768px){
+  .contact{padding-left:var(--page);padding-right:var(--page)}
+  .contact-video{position:relative!important;left:auto!important;right:auto!important;width:100%!important;max-width:100%;margin:2rem 0 3rem!important;align-self:stretch}
+}
+
+@media(max-width:768px){
+  .hero-static::after{display:none}
+}
+
+@media(max-width:900px){
+  .manifesto .portfolio-screen{display:block}
+  .manifesto .reel-copy{left:var(--page);right:var(--page);bottom:2rem;width:auto}
+  .manifesto .reel-index{left:var(--page);top:2rem}
 }

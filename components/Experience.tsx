@@ -104,20 +104,25 @@ export function Experience({children}:{children:ReactNode}){useEffect(()=>{gsap.
       return()=>{processScope?.removeEventListener("pointermove",reactToPointer);processScope?.removeEventListener("pointerleave",settleProcess)};
     });
     mm.add("(max-width:900px)",()=>{
-      const manifestoMobile=gsap.timeline({scrollTrigger:{trigger:".manifesto",start:"top 82%",toggleActions:"play none none reverse"}});
+      const playMobileReel=()=>document.querySelectorAll<HTMLVideoElement>(".reel-project video").forEach(video=>{video.currentTime=0;void video.play().catch(()=>undefined)});
+      const manifestoMobile=gsap.timeline({scrollTrigger:{trigger:".manifesto",start:"top top",end:"+=280%",pin:true,scrub:.7}});
       manifestoMobile
-        .fromTo(".manifesto-scene",{scale:.9,yPercent:9,opacity:.18},{scale:1,yPercent:0,opacity:.72,ease:"none"},0)
-        .fromTo(".manifesto .manifesto-rendered-title",{y:28,opacity:0},{y:0,opacity:1,ease:"power2.out"},.08)
-        .fromTo(".manifesto .manifesto-copy",{y:18,opacity:0},{y:0,opacity:1,ease:"power2.out"},.18)
-        .fromTo(".manifesto .scene-portal",{scale:.62,rotateZ:-8,opacity:0},{scale:1,rotateZ:0,opacity:1,ease:"power3.out"},.12)
-        .to(".manifesto .depth-a",{xPercent:-5,yPercent:-3,ease:"none"},.3)
-        .to(".manifesto .depth-b",{xPercent:6,yPercent:4,ease:"none"},.3);
-      gsap.to(".manifesto .portal-core",{scale:1.18,opacity:.9,duration:1.5,ease:"sine.inOut",repeat:-1,yoyo:true});
-      gsap.to(".manifesto .pr-1",{rotate:90,duration:5,ease:"none",repeat:-1});
-      gsap.to(".manifesto .pr-2",{rotate:-90,duration:4.2,ease:"none",repeat:-1});
-      gsap.to(".manifesto .pr-3",{rotate:60,duration:3.5,ease:"none",repeat:-1});
-      gsap.to(".manifesto .sf-a",{x:22,y:-14,rotate:5,duration:2.8,ease:"sine.inOut",repeat:-1,yoyo:true});
-      gsap.to(".manifesto .manifesto-rendered-title",{y:-7,duration:2.4,ease:"sine.inOut",repeat:-1,yoyo:true});
+        .set(".manifesto .portfolio-screen",{display:"block",opacity:0})
+        .to(".manifesto .manifesto-rendered-title,.manifesto .manifesto-copy,.manifesto .label",{y:-28,opacity:0,duration:.18,ease:"power2.in"},.08)
+        .fromTo(".manifesto-scene",{scale:.82,yPercent:12,opacity:.1},{scale:1,yPercent:0,opacity:1,duration:.34,ease:"power3.out"},.2)
+        .fromTo(".manifesto .stage-room",{opacity:0,scale:.88},{opacity:1,scale:1,duration:.18,ease:"sine.out"},.28)
+        .fromTo(".manifesto .depth-a,.manifesto .depth-b,.manifesto .sf-a",{opacity:0,y:24},{opacity:.72,y:0,duration:.22,stagger:.05,ease:"power3.out"},.34)
+        .fromTo(".manifesto .scene-portal",{scale:.42,rotateZ:-18,opacity:0},{scale:1,rotateZ:0,opacity:1,duration:.28,ease:"back.out(1.4)"},.42)
+        .to(".manifesto .pr-1",{rotate:180,duration:.32,ease:"none"},.47)
+        .to(".manifesto .pr-2",{rotate:-150,duration:.32,ease:"none"},.47)
+        .to(".manifesto .pr-3",{rotate:110,duration:.32,ease:"none"},.47)
+        .to(".manifesto-scene",{scale:2.2,opacity:0,duration:.2,ease:"power3.in"},.68)
+        .set(".manifesto .portfolio-screen",{opacity:1},.82)
+        .call(playMobileReel,[],.82)
+        .fromTo(".reel-1",{opacity:0,scale:1.06},{opacity:1,scale:1,duration:.12,ease:"power2.out"},.82)
+        .to(".reel-1",{opacity:1,duration:.18},.94)
+        .to(".reel-1",{opacity:0,scale:.98,duration:.1,ease:"power2.in"},1.12)
+        .fromTo(".reel-2",{opacity:0,scale:1.06},{opacity:1,scale:1,duration:.14,ease:"power2.out"},1.2);
       document.querySelectorAll<HTMLElement>(".artifact-main").forEach(el=>gsap.fromTo(el,{yPercent:12,scale:.92},{yPercent:-12,scale:1.05,ease:"none",scrollTrigger:{trigger:el,start:"top bottom",end:"bottom top",scrub:.65}}));
     });
     gsap.utils.toArray<HTMLElement>(".step").forEach(el=>gsap.from(el,{x:80,opacity:0,duration:1,ease:"power4.out",scrollTrigger:{trigger:el,start:"top 84%",once:true}}));
