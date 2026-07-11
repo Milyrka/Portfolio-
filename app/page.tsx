@@ -19,7 +19,8 @@ export default function Home(){return <Experience>
   <div className="noise" aria-hidden="true"/><div className="cursor-dot"/><div className="cursor-ring"/>
   <main>
     <section className="hero hero-static" id="hero" data-scene>
-      <Image className="hero-static-media" src="/hero/hero-final-clean.png" alt="Катя Иванушкина — cinematic digital experiences" fill priority sizes="100vw"/>
+      <img className="hero-static-media hero-static-media-desktop" src="/hero/hero-final-clean.png" alt="Катя Иванушкина — cinematic digital experiences"/>
+      <img className="hero-static-media hero-static-media-mobile" src="/hero/hero-mobile-final.png" alt="Катя Иванушкина — cinematic digital experiences"/>
       <div className="hero-cleanup" aria-hidden="true"/>
       <a className="hero-static-hit hero-static-hit-discuss-top" href={telegramUrl} target="_blank" rel="noreferrer" aria-label="Обсудить идею в Telegram"/>
       <a className="hero-static-hit hero-static-hit-discuss-bottom" href={telegramUrl} target="_blank" rel="noreferrer" aria-label="Обсудить проект в Telegram"/>

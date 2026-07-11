@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import type {MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent} from "react";
+import type {TouchEvent as ReactTouchEvent} from "react";
 import {useEffect,useRef,useState} from "react";
 
 type Device="tablet"|"desktop"|"mobile";
@@ -19,27 +19,17 @@ const projects:Project[]=[
 
 function Screen({project,device,playing,savedTime,onStart,onStop}:{project:Project;device:Device;playing:boolean;savedTime:number;onStart:()=>void;onStop:(time:number)=>void}){
   const videoRef=useRef<HTMLVideoElement>(null);
-  const stopLock=useRef(false);
   const videoSrc=device==="mobile"&&project.mobileVideo?project.mobileVideo:project.video;
   const mobileFitClass=device==="mobile"?` mobile-fit-${project.mobileFit??"cover"}`:"";
   const startPlayback=()=>{emitSound("ui-tap");emitSound("video-play",savedTime);onStart()};
   const stopPlayback=()=>{const video=videoRef.current;const time=video?.currentTime??savedTime;emitSound("video-pause",time);video?.pause();onStop(time)};
-  const requestStop=(event?:ReactPointerEvent|ReactMouseEvent)=>{
-    if(!playing)return;
-    event?.preventDefault();
-    event?.stopPropagation();
-    if(stopLock.current)return;
-    stopLock.current=true;
-    stopPlayback();
-    window.setTimeout(()=>{stopLock.current=false},180);
-  };
   useEffect(()=>{const video=videoRef.current;if(!video)return;if(!playing){video.pause();return}const resume=()=>{const duration=Number.isFinite(video.duration)?video.duration:0;if(savedTime>0&&duration>0&&Math.abs(video.currentTime-savedTime)>.15)video.currentTime=Math.min(savedTime,Math.max(0,duration-.05));void video.play().catch(()=>undefined)};if(video.readyState>=2)resume();else video.addEventListener("canplay",resume,{once:true});return()=>video.removeEventListener("canplay",resume)},[playing,savedTime]);
-  return <div className="device-screen" onPointerDown={requestStop} onClick={requestStop}>
+  return <div className="device-screen" onClick={event=>{if(!playing)return;event.stopPropagation();stopPlayback()}}>
     <span className="device-media-backdrop" style={{backgroundImage:`url(${project.poster})`}} aria-hidden="true"/>
     {videoSrc&&<video data-screen-video={device} className={`device-video video-${device}${playing?" is-playing":""}${mobileFitClass}`} ref={videoRef} src={videoSrc} poster={project.poster} muted loop playsInline preload="auto" onPlay={event=>emitSound("video-play",event.currentTarget.currentTime)}/>}
     {!playing&&<Image className={`device-poster${mobileFitClass}`} src={project.poster} alt="" fill sizes={device==="desktop"?"56vw":device==="tablet"?"25vw":"13vw"}/>} 
     <span className="screen-reflection"/>
-    {videoSrc&&playing&&<button type="button" className="device-pause-layer" data-pause-device={device} onPointerDown={requestStop} onClick={requestStop} aria-label={`Остановить ${project.title} — ${device}`}/>}
+    {videoSrc&&playing&&<button type="button" className="device-pause-layer" data-pause-device={device} onClick={event=>{event.preventDefault();event.stopPropagation();stopPlayback()}} aria-label={`Остановить ${project.title} — ${device}`}/>}
     {videoSrc&&!playing&&<button type="button" className="device-play" data-play-device={device} onClick={event=>{event.preventDefault();event.stopPropagation();startPlayback()}} aria-label={`Воспроизвести ${project.title} — ${device}`}><i/>PLAY</button>}
     {videoSrc&&playing&&<span className="pause-hint">Нажмите, чтобы остановить</span>}
   </div>
@@ -47,44 +37,8 @@ function Screen({project,device,playing,savedTime,onStart,onStop}:{project:Proje
 
 function DeviceMockup({type,project,active,playing,savedTime,onStart,onStop}:{type:Device;project:Project;active:boolean;playing:boolean;savedTime:number;onStart:()=>void;onStop:(time:number)=>void}){
   const labels={tablet:"Tablet",desktop:"Desktop",mobile:"Mobile"};
-  const deviceRef=useRef<HTMLDivElement>(null);
-  const suppressNextClick=useRef(false);
-  const captureStopLock=useRef(false);
-  const stopDevicePlayback=()=>{const video=deviceRef.current?.querySelector<HTMLVideoElement>("video");const time=video?.currentTime??savedTime;emitSound("video-pause",time);video?.pause();onStop(time)};
-  useEffect(()=>{
-    const element=deviceRef.current;
-    if(!element)return;
-    const nativeStop=(event:Event)=>{
-      if(!playing || !(event.target as HTMLElement).closest(".device-screen"))return;
-      event.preventDefault();
-      event.stopPropagation();
-      if(captureStopLock.current)return;
-      captureStopLock.current=true;
-      suppressNextClick.current=true;
-      stopDevicePlayback();
-      window.setTimeout(()=>{captureStopLock.current=false},320);
-    };
-    element.addEventListener("pointerup",nativeStop,{capture:true});
-    element.addEventListener("touchend",nativeStop,{capture:true,passive:false});
-    element.addEventListener("click",nativeStop,{capture:true});
-    return()=>{
-      element.removeEventListener("pointerup",nativeStop,{capture:true});
-      element.removeEventListener("touchend",nativeStop,{capture:true});
-      element.removeEventListener("click",nativeStop,{capture:true});
-    };
-  },[playing,savedTime]);
-  const stopFromScreen=(event:ReactPointerEvent<HTMLDivElement>|ReactMouseEvent<HTMLDivElement>)=>{
-    if(!playing || !(event.target as HTMLElement).closest(".device-screen"))return;
-    event.preventDefault();
-    event.stopPropagation();
-    if(captureStopLock.current)return;
-    captureStopLock.current=true;
-    suppressNextClick.current=true;
-    stopDevicePlayback();
-    window.setTimeout(()=>{captureStopLock.current=false},320);
-  };
-  const toggle=()=>{const hasVideo=type==="mobile"&&project.mobileVideo?project.mobileVideo:project.video;if(!hasVideo)return;if(playing){stopDevicePlayback();return}emitSound("ui-tap");emitSound("video-play",savedTime);onStart()};
-  return <div ref={deviceRef} className={`device device-${type}${active?" is-active":""}`} data-device={type} role="button" tabIndex={0} aria-label={`${playing?"Остановить":"Воспроизвести"} ${project.title} — ${labels[type]}`} onPointerDownCapture={stopFromScreen} onPointerUpCapture={stopFromScreen} onMouseDownCapture={stopFromScreen} onClick={event=>{if(suppressNextClick.current){suppressNextClick.current=false;event.preventDefault();event.stopPropagation();return}if((event.target as HTMLElement).closest("button,a"))return;toggle()}} onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();toggle()}}}>
+  const toggle=()=>{const hasVideo=type==="mobile"&&project.mobileVideo?project.mobileVideo:project.video;if(!hasVideo)return;if(playing){onStop(savedTime);return}emitSound("ui-tap");emitSound("video-play",savedTime);onStart()};
+  return <div className={`device device-${type}${active?" is-active":""}`} data-device={type} role="button" tabIndex={0} aria-label={`${playing?"Остановить":"Воспроизвести"} ${project.title} — ${labels[type]}`} onClick={event=>{if((event.target as HTMLElement).closest("button,a"))return;toggle()}} onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();toggle()}}}>
     <div className="device-shell"><Screen project={project} device={type} playing={playing} savedTime={savedTime} onStart={onStart} onStop={onStop}/><span className="device-edge"/></div>
     {type==="desktop"&&<div className="monitor-base"><i/><b/></div>}
     <span className="device-label">{labels[type]}</span>
@@ -97,13 +51,17 @@ function ProjectStage({project,index}:{project:Project;index:number}){
   const [playingDevice,setPlayingDevice]=useState<Device|null>(null);
   const [savedTimes,setSavedTimes]=useState<Record<Device,number>>({tablet:0,desktop:0,mobile:0});
   const wheelLock=useRef(0);
+  const touchStart=useRef<{x:number;y:number}|null>(null);
   const articleRef=useRef<HTMLElement>(null);
+  const changeDevice=(direction:1|-1)=>setActive(current=>{const position=order.indexOf(current);return order[(position+direction+order.length)%order.length]});
   useEffect(()=>{const element=articleRef.current;if(!element)return;const onWheel=(event:globalThis.WheelEvent)=>{
     const horizontal=Math.abs(event.deltaX)>16?event.deltaX:event.shiftKey&&Math.abs(event.deltaY)>16?event.deltaY:0;
     if(!horizontal)return;event.preventDefault();const now=Date.now();if(now-wheelLock.current<520)return;wheelLock.current=now;
-    setActive(current=>{const position=order.indexOf(current);return order[(position+(horizontal>0?1:-1)+order.length)%order.length]});
+    changeDevice(horizontal>0?1:-1);
   };element.addEventListener("wheel",onWheel,{passive:false});return()=>element.removeEventListener("wheel",onWheel)},[]);
-  return <article ref={articleRef} className={`adaptive-project focus-${active}`} data-project-index={index}>
+  const onTouchStart=(event:ReactTouchEvent<HTMLElement>)=>{const touch=event.touches[0];if(touch)touchStart.current={x:touch.clientX,y:touch.clientY}};
+  const onTouchEnd=(event:ReactTouchEvent<HTMLElement>)=>{const start=touchStart.current,touch=event.changedTouches[0];touchStart.current=null;if(!start||!touch)return;const deltaX=touch.clientX-start.x,deltaY=touch.clientY-start.y;if(Math.abs(deltaX)<48||Math.abs(deltaX)<=Math.abs(deltaY))return;changeDevice(deltaX<0?1:-1)};
+  return <article ref={articleRef} className={`adaptive-project focus-${active}`} data-project-index={index} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
     <div className="exhibition" data-tilt>
       {order.map(type=><DeviceMockup key={type} type={type} project={project} active={active===type} playing={playingDevice===type} savedTime={savedTimes[type]} onStart={()=>setPlayingDevice(type)} onStop={time=>{setSavedTimes(current=>({...current,[type]:time}));setPlayingDevice(null)}}/>)}
       <div className="exhibition-floor"/>

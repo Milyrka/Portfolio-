@@ -30,7 +30,7 @@ export function Experience({children}:{children:ReactNode}){useEffect(()=>{gsap.
   const ctx=gsap.context(()=>{if(reduced)return;
     // Opening shot: a restrained vertical curtain reveals the portrait, then typography finds focus.
     if(document.querySelector(".hero-video-frame"))gsap.timeline({defaults:{ease:"power4.out"}}).fromTo(".hero-video-frame",{clipPath:"inset(48% 0 48% 0 round 1.4rem)"},{clipPath:"inset(0% 0 0% 0 round 1.4rem)",duration:1.45}).from(".hero-scroll-video",{scale:1.08,filter:"saturate(.7) contrast(.9) brightness(.75)",duration:1.8},0).from(".hero-title-relief span",{yPercent:112,duration:1.05,stagger:.09},.34).from(".hero-name,.hero-role,.hero-copy,.hero-actions",{y:18,opacity:0,duration:.8,stagger:.045},.68);
-    mm.add("(min-width:769px)",()=>{
+    mm.add("(min-width:901px)",()=>{
       // Slow lateral drift: the composed hero leaves frame intact instead of zooming through the face.
       const heroVideo=document.querySelector<HTMLVideoElement>(".hero-scroll-video");
       if(heroVideo){const seekHeroVideo=(progress:number)=>{if(!Number.isFinite(heroVideo.duration)||heroVideo.duration<=0)return;heroVideo.currentTime=Math.min(heroVideo.duration-.04,heroVideo.duration*progress)};
@@ -103,7 +103,21 @@ export function Experience({children}:{children:ReactNode}){useEffect(()=>{gsap.
       processScope?.addEventListener("pointermove",reactToPointer,{passive:true});processScope?.addEventListener("pointerleave",settleProcess);
       return()=>{processScope?.removeEventListener("pointermove",reactToPointer);processScope?.removeEventListener("pointerleave",settleProcess)};
     });
-    mm.add("(max-width:768px)",()=>{document.querySelectorAll<HTMLElement>(".artifact-main").forEach(el=>gsap.fromTo(el,{yPercent:12,scale:.92},{yPercent:-12,scale:1.05,ease:"none",scrollTrigger:{trigger:el,start:"top bottom",end:"bottom top",scrub:.65}}));gsap.from(".manifesto-lines h2 span",{yPercent:105,stagger:.12,duration:1,ease:"power4.out",scrollTrigger:{trigger:".manifesto-lines",start:"top 82%"}})});
+    mm.add("(max-width:900px)",()=>{
+      const manifestoMobile=gsap.timeline({scrollTrigger:{trigger:".manifesto",start:"top 82%",toggleActions:"play none none reverse"}});
+      manifestoMobile
+        .fromTo(".manifesto-scene",{scale:.9,yPercent:9,opacity:.18},{scale:1,yPercent:0,opacity:.72,ease:"none"},0)
+        .fromTo(".manifesto .manifesto-rendered-title",{y:28,opacity:0},{y:0,opacity:1,ease:"power2.out"},.08)
+        .fromTo(".manifesto .manifesto-copy",{y:18,opacity:0},{y:0,opacity:1,ease:"power2.out"},.18)
+        .fromTo(".manifesto .scene-portal",{scale:.62,rotateZ:-8,opacity:0},{scale:1,rotateZ:0,opacity:1,ease:"power3.out"},.12)
+        .to(".manifesto .depth-a",{xPercent:-5,yPercent:-3,ease:"none"},.3)
+        .to(".manifesto .depth-b",{xPercent:6,yPercent:4,ease:"none"},.3);
+      gsap.to(".manifesto .portal-core",{scale:1.18,opacity:.9,duration:1.5,ease:"sine.inOut",repeat:-1,yoyo:true});
+      gsap.to(".manifesto .pr-1",{rotate:90,duration:5,ease:"none",repeat:-1});
+      gsap.to(".manifesto .pr-2",{rotate:-90,duration:4.2,ease:"none",repeat:-1});
+      gsap.to(".manifesto .pr-3",{rotate:60,duration:3.5,ease:"none",repeat:-1});
+      document.querySelectorAll<HTMLElement>(".artifact-main").forEach(el=>gsap.fromTo(el,{yPercent:12,scale:.92},{yPercent:-12,scale:1.05,ease:"none",scrollTrigger:{trigger:el,start:"top bottom",end:"bottom top",scrub:.65}}));
+    });
     gsap.utils.toArray<HTMLElement>(".step").forEach(el=>gsap.from(el,{x:80,opacity:0,duration:1,ease:"power4.out",scrollTrigger:{trigger:el,start:"top 84%",once:true}}));
     gsap.utils.toArray<HTMLElement>(".adaptive-project").forEach(scene=>{
       gsap.timeline({scrollTrigger:{trigger:scene,start:"top 78%",end:"top 28%",scrub:.65}})
