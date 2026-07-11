@@ -103,6 +103,7 @@ body{font-family:var(--font-body);font-weight:400}.hero h1,.manifesto-lines h2,.
   .focus-desktop .device-desktop{z-index:8;left:0;right:auto;top:10%;width:100%;transform:none;opacity:1}
   .focus-tablet .device-tablet{z-index:8;left:5%;right:auto;top:8%;width:90%;transform:none;opacity:1}
   .focus-mobile .device-mobile{z-index:8;left:27%;right:auto;top:0;width:46%;transform:none;opacity:1}
+  .focus-desktop .monitor-base{top:calc(100% + .45rem);height:5.7rem}
   .adaptive-project .device-screen video,.adaptive-project .device-screen img,.adaptive-project .device-mobile .device-video.mobile-fit-height,.adaptive-project .device-mobile .device-poster.mobile-fit-height{left:0!important;width:100%!important;min-width:0!important;max-width:100%!important;height:100%!important;transform:none!important;object-fit:contain!important;object-position:center!important}
 }
 
