@@ -607,6 +607,7 @@ main[data-language="en"] .contact h2.contact-clay-title.is-english img{object-fi
   /* Keep the second Manifesto state in the exact middle of the mobile stage. */
   .manifesto .portfolio-screen .reel-project{display:grid;place-items:center}
   .manifesto .portfolio-screen .reel-media{position:relative;inset:auto;left:auto;top:auto;right:auto;bottom:auto;transform:none;margin:auto}
+  .manifesto{height:100dvh!important;min-height:100dvh!important;padding:0!important}
 }
 
 /* The English desktop artwork includes its top navigation; do not crop it. */

@@ -20,7 +20,8 @@ export function Experience({children}:{children:ReactNode}){useEffect(()=>{gsap.
   const playToolsSwoosh=()=>{if(!soundEnabled||!toolsSwoosh)return;toolsSwoosh.pause();toolsSwoosh.currentTime=0;void toolsSwoosh.play().catch(()=>undefined)};
   const playUiTap=()=>{if(!uiTap)return;uiTap.pause();uiTap.currentTime=0;void uiTap.play().catch(()=>undefined)};
   const activateSound=(name:keyof typeof soundTracks|null)=>{if(currentSound===name&&(!name||!soundEnabled||!soundTracks[name]?.paused))return;currentSound=name;pauseBackground();if(soundEnabled&&name){void soundTracks[name]?.play().catch(()=>undefined)}};
-  const toggleSound=()=>{soundEnabled=!soundEnabled;soundButton?.setAttribute("aria-pressed",String(soundEnabled));if(soundEnabled&&currentSound)void soundTracks[currentSound]?.play().catch(()=>undefined);else if(!soundEnabled)stopSounds()};
+  const primeMobileAudio=()=>Object.values(soundTracks).forEach(track=>{if(!track)return;track.muted=true;void track.play().then(()=>{track.pause();track.currentTime=0;track.muted=false}).catch(()=>{track.muted=false})});
+  const toggleSound=()=>{soundEnabled=!soundEnabled;soundButton?.setAttribute("aria-pressed",String(soundEnabled));if(soundEnabled){primeMobileAudio();if(currentSound)void soundTracks[currentSound]?.play().catch(()=>undefined)}else stopSounds()};
   soundButton?.addEventListener("click",toggleSound);
   const onUiTap=()=>playUiTap();
   const onProcessWhoosh=()=>playProcessWhoosh();
