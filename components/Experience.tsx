@@ -17,11 +17,11 @@ export function Experience({children}:{children:ReactNode}){useEffect(()=>{gsap.
   const playProcessWhoosh=()=>{if(!soundEnabled||!processWhoosh)return;processWhoosh.pause();processWhoosh.currentTime=0;void processWhoosh.play().catch(()=>undefined)};
   const playUiTap=()=>{if(!uiTap)return;uiTap.pause();uiTap.currentTime=0;void uiTap.play().catch(()=>undefined)};
   const activateSound=(name:keyof typeof soundTracks|null)=>{if(currentSound===name&&(!name||!soundEnabled||!soundTracks[name]?.paused))return;currentSound=name;pauseBackground();if(soundEnabled&&name){void soundTracks[name]?.play().catch(()=>undefined)}};
-  const toggleSound=()=>{soundEnabled=!soundEnabled;soundButton?.setAttribute("aria-pressed",String(soundEnabled));if(soundEnabled&&currentSound)void soundTracks[currentSound]?.play().catch(()=>undefined);else stopSounds()};
+  const toggleSound=()=>{soundEnabled=!soundEnabled;soundButton?.setAttribute("aria-pressed",String(soundEnabled));if(soundEnabled){const track=currentSound??"scene1";currentSound=track;void soundTracks[track]?.play().catch(()=>undefined)}else stopSounds()};
   soundButton?.addEventListener("click",toggleSound);
   const onUiTap=()=>playUiTap();
   const onProcessWhoosh=()=>playProcessWhoosh();
-  const onVideoPlay=(event:Event)=>{const time=(event as CustomEvent<{currentTime:number}>).detail?.currentTime??0;const track=soundTracks.scene2;currentSound="scene2";pauseBackground();if(track){const start=()=>{if(Number.isFinite(track.duration)&&track.duration>0)track.currentTime=time%track.duration;void track.play().catch(()=>undefined)};if(track.readyState>=1)start();else track.addEventListener("loadedmetadata",start,{once:true})}};
+  const onVideoPlay=(event:Event)=>{if(!soundEnabled)return;const time=(event as CustomEvent<{currentTime:number}>).detail?.currentTime??0;const track=soundTracks.scene2;currentSound="scene2";pauseBackground();if(track){const start=()=>{if(Number.isFinite(track.duration)&&track.duration>0)track.currentTime=time%track.duration;void track.play().catch(()=>undefined)};if(track.readyState>=1)start();else track.addEventListener("loadedmetadata",start,{once:true})}};
   const onVideoPause=()=>{if(currentSound==="scene2"){soundTracks.scene2?.pause();currentSound=null}};
   addEventListener("portfolio-ui-tap",onUiTap);addEventListener("portfolio-process-whoosh",onProcessWhoosh);addEventListener("portfolio-video-play",onVideoPlay);addEventListener("portfolio-video-pause",onVideoPause);
   if(fine&&!reduced){document.body.classList.add("has-cursor");const dot=document.querySelector<HTMLElement>(".cursor-dot"),ring=document.querySelector<HTMLElement>(".cursor-ring");const move=(e:PointerEvent)=>{tx=e.clientX;ty=e.clientY;document.documentElement.style.setProperty("--mx",`${(tx/innerWidth-.5).toFixed(3)}`);document.documentElement.style.setProperty("--my",`${(ty/innerHeight-.5).toFixed(3)}`)};const tick=()=>{cx+=(tx-cx)*.28;cy+=(ty-cy)*.28;rx+=(tx-rx)*.1;ry+=(ty-ry)*.1;if(dot)dot.style.transform=`translate3d(${cx}px,${cy}px,0)`;if(ring)ring.style.transform=`translate3d(${rx}px,${ry}px,0)`;raf=requestAnimationFrame(tick)};addEventListener("pointermove",move,{passive:true});tick();
@@ -116,7 +116,7 @@ export function Experience({children}:{children:ReactNode}){useEffect(()=>{gsap.
         .to(".manifesto .pr-1",{rotate:180,duration:.32,ease:"none"},.47)
         .to(".manifesto .pr-2",{rotate:-150,duration:.32,ease:"none"},.47)
         .to(".manifesto .pr-3",{rotate:110,duration:.32,ease:"none"},.47)
-        .to(".manifesto-scene",{scale:2.2,opacity:0,duration:.2,ease:"power3.in"},.68)
+        .to(".manifesto-scene",{scale:1.18,opacity:0,duration:.2,ease:"power3.in"},.68)
         .set(".manifesto .portfolio-screen",{opacity:1},.82)
         .call(playMobileReel,[],.82)
         .fromTo(".reel-1",{opacity:0,scale:1.06},{opacity:1,scale:1,duration:.12,ease:"power2.out"},.82)
@@ -138,4 +138,4 @@ export function Experience({children}:{children:ReactNode}){useEffect(()=>{gsap.
       .fromTo(".m2",{xPercent:-18},{xPercent:0,duration:1,ease:"none"},0);
     ScrollTrigger.create({trigger:".manifesto",start:"top top",end:"+=820%",onEnter:()=>activateSound("scene1"),onEnterBack:()=>activateSound("scene2"),onUpdate:self=>activateSound(self.progress<.62?"scene1":"scene2"),onLeave:()=>activateSound(null),onLeaveBack:()=>activateSound(null)});
   });
-  return()=>{cancelAnimationFrame(raf);soundButton?.removeEventListener("click",toggleSound);removeEventListener("portfolio-ui-tap",onUiTap);removeEventListener("portfolio-process-whoosh",onProcessWhoosh);removeEventListener("portfolio-video-play",onVideoPlay);removeEventListener("portfolio-video-pause",onVideoPause);stopSounds();document.body.classList.remove("has-cursor");mm.revert();ctx.revert()};},[]);return <>{children}</>}
+  return()=>{cancelAnimationFrame(raf);soundButton?.removeEventListener("click",toggleSound);removeEventListener("portfolio-ui-tap",onUiTap);removeEventListener("portfolio-process-whoosh",onProcessWhoosh);removeEventListener("portfolio-video-play",onVideoPlay);removeEventListener("portfolio-video-pause",onVideoPause);stopSounds();document.body.classList.remove("has-cursor");mm.revert();ctx.revert()};},[children]);return <>{children}</>}

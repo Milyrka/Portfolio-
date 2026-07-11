@@ -70,7 +70,7 @@ function Portfolio(){const {language,toggleLanguage}=useLanguage();const en=lang
 
     <section className="process" data-scene>
       <div className="process-camera"><p className="label">{copy.process}</p><h2 className={`process-rendered-title${en?" is-english":""}`}>{en?<span className="process-lead process-lead-english"><Image src="/process/process-title-en.png" alt={copy.from} fill sizes="62vw"/></span>:<span className="process-lead"><span className="sr-only">{copy.from}</span><Image src="/process/process-lead-20260709.png" alt="" fill sizes="62vw"/></span>}{en?null:<>до <i><span className="living-word">живого</span><br/><span className="process-experience">опыта.</span></i></>}</h2><div className="process-scope" data-tilt>
-        {copy.frames.map((alt,index)=><div className={`process-frame pf-${index+1}`} key={alt}><Image src={`/process/0${index+1}-${["background.png","grid.png","relief.png","live.png"][index]}`} alt={alt} fill sizes="30vw"/></div>)}
+        {copy.frames.map((alt,index)=><div className={`process-frame pf-${index+1}`} key={alt}><img src={`/process/0${index+1}-${["background.png","grid.png","relief.png","live.png"][index]}`} alt={alt}/></div>)}
         <span className="process-caption">01 / ИМПУЛЬС</span>
       </div></div>
       <div className="steps">{copy.steps.map(s=><article className="step" key={s[0]}><span>{s[0]}</span><h3>{s[1]}</h3><p>{s[2]}</p></article>)}</div>

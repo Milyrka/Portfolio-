@@ -22,7 +22,7 @@ function Screen({project,device,playing,savedTime,onStart,onStop}:{project:Proje
   const videoRef=useRef<HTMLVideoElement>(null);
   const videoSrc=device==="mobile"&&project.mobileVideo?project.mobileVideo:project.video;
   const mobileFitClass=device==="mobile"?` mobile-fit-${project.mobileFit??"cover"}`:"";
-  const startPlayback=()=>{emitSound("ui-tap");emitSound("video-play",savedTime);onStart()};
+  const startPlayback=()=>{const video=videoRef.current;if(video){video.muted=true;void video.play().catch(()=>undefined)}emitSound("ui-tap");emitSound("video-play",savedTime);onStart()};
   const stopPlayback=()=>{const video=videoRef.current;const time=video?.currentTime??savedTime;emitSound("video-pause",time);video?.pause();onStop(time)};
   useEffect(()=>{const video=videoRef.current;if(!video)return;if(!playing){video.pause();return}const resume=()=>{const duration=Number.isFinite(video.duration)?video.duration:0;if(savedTime>0&&duration>0&&Math.abs(video.currentTime-savedTime)>.15)video.currentTime=Math.min(savedTime,Math.max(0,duration-.05));void video.play().catch(()=>undefined)};if(video.readyState>=2)resume();else video.addEventListener("canplay",resume,{once:true});return()=>video.removeEventListener("canplay",resume)},[playing,savedTime]);
   return <div className="device-screen" onClick={event=>{if(!playing)return;event.stopPropagation();stopPlayback()}}>
