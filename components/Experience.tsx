@@ -81,6 +81,7 @@ export function Experience({children}:{children:ReactNode}){useEffect(()=>{gsap.
       });
       man.scrollTrigger?.kill();
       ScrollTrigger.create({trigger:".manifesto",start:"top top",end:"+=820%",pin:true,scrub:.82,animation:man});
+      ScrollTrigger.create({trigger:".manifesto",start:"top top",end:"+=820%",onEnter:()=>activateSound("scene1"),onEnterBack:()=>activateSound("scene2"),onUpdate:self=>activateSound(self.progress<.9?"scene1":"scene2"),onLeave:()=>activateSound(null),onLeaveBack:()=>activateSound(null)});
       document.querySelectorAll<HTMLElement>("[data-project]").forEach((scene,index)=>{const world=scene.querySelector(".project-world"),main=scene.querySelector(".artifact-main"),back=scene.querySelector(".artifact-back"),front=scene.querySelector(".artifact-front"),info=scene.querySelector(".project-info");
         // Chapter tracking shot: the camera crosses three physical planes per project.
         gsap.timeline({scrollTrigger:{trigger:scene,start:"top top",end:"+=190%",pin:true,scrub:.75}}).fromTo(world,{scale:.62,rotateX:7},{scale:1.1,rotateX:0,ease:"none"},0).fromTo(back,{z:-160,rotate:-8},{z:40,rotate:5,ease:"none"},0).fromTo(main,{z:-40,yPercent:14},{z:150,yPercent:-8,ease:"none"},0).fromTo(front,{z:120,xPercent:18},{z:280,xPercent:-14,ease:"none"},0).fromTo(info,{yPercent:18,opacity:0},{yPercent:-5,opacity:1,ease:"power2.out"},.12).to(info,{yPercent:-28,opacity:.16,ease:"none"},.72).to(scene,{"--phase":1,duration:1,ease:"none"},0);
@@ -127,6 +128,7 @@ export function Experience({children}:{children:ReactNode}){useEffect(()=>{gsap.
         .to(".reel-1",{opacity:1,duration:.18},.94)
         .to(".reel-1",{opacity:0,scale:.98,duration:.1,ease:"power2.in"},1.12)
         .fromTo(".reel-2",{opacity:0,scale:1.06},{opacity:1,scale:1,duration:.14,ease:"power2.out"},1.2);
+      ScrollTrigger.create({trigger:".manifesto",start:"top top",end:"+=280%",onEnter:()=>activateSound("scene1"),onEnterBack:()=>activateSound("scene2"),onUpdate:self=>activateSound(self.progress<.82?"scene1":"scene2"),onLeave:()=>activateSound(null),onLeaveBack:()=>activateSound(null)});
       document.querySelectorAll<HTMLElement>(".artifact-main").forEach(el=>gsap.fromTo(el,{yPercent:12,scale:.92},{yPercent:-12,scale:1.05,ease:"none",scrollTrigger:{trigger:el,start:"top bottom",end:"bottom top",scrub:.65}}));
     });
     gsap.utils.toArray<HTMLElement>(".step").forEach(el=>gsap.from(el,{x:80,opacity:0,duration:1,ease:"power4.out",scrollTrigger:{trigger:el,start:"top 84%",once:true}}));
@@ -141,6 +143,5 @@ export function Experience({children}:{children:ReactNode}){useEffect(()=>{gsap.
     gsap.timeline({scrollTrigger:{trigger:".tools",start:"top top",end:"+=220%",pin:true,scrub:.85,onUpdate:self=>{const pass=Math.floor(self.progress*5);if(pass!==lastToolsPass){lastToolsPass=pass;playToolsSwoosh()}},onLeave:()=>{lastToolsPass=-1},onLeaveBack:()=>{lastToolsPass=-1}}})
       .fromTo(".m1",{xPercent:0},{xPercent:-18,duration:1,ease:"none"},0)
       .fromTo(".m2",{xPercent:-18},{xPercent:0,duration:1,ease:"none"},0);
-    ScrollTrigger.create({trigger:".manifesto",start:"top top",end:"+=820%",onEnter:()=>activateSound("scene1"),onEnterBack:()=>activateSound("scene2"),onUpdate:self=>activateSound(self.progress<.62?"scene1":"scene2"),onLeave:()=>activateSound(null),onLeaveBack:()=>activateSound(null)});
   });
   return()=>{cancelAnimationFrame(raf);soundButton?.removeEventListener("click",toggleSound);removeEventListener("portfolio-ui-tap",onUiTap);removeEventListener("portfolio-process-whoosh",onProcessWhoosh);removeEventListener("portfolio-video-play",onVideoPlay);removeEventListener("portfolio-video-pause",onVideoPause);stopSounds();document.body.classList.remove("has-cursor");mm.revert();ctx.revert()};},[children]);return <>{children}</>}
