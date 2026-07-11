@@ -597,3 +597,14 @@ main[data-language="en"] .contact h2.contact-clay-title.is-english img{object-fi
   main[data-language="en"] .hero-static::after{display:none}
   main[data-language="en"] .process-lead-english{height:16.8vw}
 }
+
+/* iPhone Safari uses a shorter visual viewport while its toolbars are visible. */
+@media(max-width:768px){
+  .hero-static{height:100dvh!important;min-height:100dvh!important}
+  .hero-static .hero-static-media,
+  main[data-language="en"] .hero-static-media-en-mobile{object-fit:fill!important;object-position:center!important}
+
+  /* Keep the second Manifesto state in the exact middle of the mobile stage. */
+  .manifesto .portfolio-screen .reel-project{display:grid;place-items:center}
+  .manifesto .portfolio-screen .reel-media{position:relative;inset:auto;left:auto;top:auto;right:auto;bottom:auto;transform:none;margin:auto}
+}
