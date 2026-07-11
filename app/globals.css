@@ -532,7 +532,7 @@ main[data-language="en"] .hero-static-hit-discuss-top{z-index:30;background:#e8d
 main[data-language="en"] .hero-static-hit-discuss-top::after{content:"Discuss idea  ↗"}
 main[data-language="en"] .hero-static-hit-discuss-bottom::after{content:"Discuss a project  ↗";display:block}
 main[data-language="en"] .hero-static-hit-projects::after{content:"View projects  ↗";display:block}
-@media(max-width:768px){.language-toggle{left:1rem;top:4.15rem}.manifesto-rendered-title.is-english{width:92vw}.contact-english-title{font-size:clamp(3rem,12vw,4.5rem)}main[data-language="en"] .hero-static-hit-discuss-bottom,main[data-language="en"] .hero-static-hit-projects{height:3.55rem;min-height:0}main[data-language="en"] .hero-static-hit-discuss-bottom{bottom:5.35rem}main[data-language="en"] .hero-static-hit-projects{bottom:calc(1.5rem + env(safe-area-inset-bottom))}}
+@media(max-width:768px){.language-toggle{left:1rem;top:4.15rem}.manifesto-rendered-title.is-english{width:92vw}.contact-english-title{font-size:clamp(3rem,12vw,4.5rem)}main[data-language="en"] .hero-static-hit-discuss-bottom,main[data-language="en"] .hero-static-hit-projects{left:3.4vw;right:3.4vw;width:auto;height:4.9dvh;min-height:0}main[data-language="en"] .hero-static-hit-discuss-bottom{top:87dvh;bottom:auto}main[data-language="en"] .hero-static-hit-projects{top:92.9dvh;bottom:auto}}
 
 @media(max-width:768px){
   .hero-static{background:#e8ded2}
